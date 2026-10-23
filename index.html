@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Class 11 AI - Exam Revision</title>
+<style>
+  :root{
+    --bg:#f4f6fb; --card:#ffffff; --ink:#1b2333; --muted:#5d6b85;
+    --line:#e2e7f0; --brand:#3b4fd8; --brand2:#6d4bd8;
+    --ok:#12885a; --okbg:#e6f6ee; --bad:#c0392b; --badbg:#fdecea;
+    --shadow:0 6px 24px rgba(27,35,51,.08);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ---------- header ---------- */
+  header{
+    background:linear-gradient(135deg,#3b4fd8,#6d4bd8 55%,#8a3fd0);
+    color:#fff; padding:22px 20px 26px;
+  }
+  .wrap{max-width:1000px;margin:0 auto}
+  header h1{margin:0 0 4px;font-size:24px;letter-spacing:-.3px}
+  header p{margin:0;opacity:.9;font-size:13.5px}
+  .headrow{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+  .reset{
+    background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.4);
+    padding:8px 14px;border-radius:999px;font-size:13px;cursor:pointer;font-weight:600;
+  }
+  .reset:hover{background:rgba(255,255,255,.28)}
+  .progress-shell{margin-top:18px}
+  .progress-top{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:7px;font-weight:600}
+  .bar{height:12px;border-radius:999px;background:rgba(255,255,255,.25);overflow:hidden}
+  .bar > i{
+    display:block;height:100%;width:0%;border-radius:999px;
+    background:linear-gradient(90deg,#8ff0c4,#c9ffe9);
+    transition:width .45s cubic-bezier(.2,.8,.2,1);
+  }
+  /* ---------- tabs ---------- */
+  nav.tabs{
+    position:sticky;top:0;z-index:20;background:rgba(244,246,251,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+  }
+  .tabs-inner{max-width:1000px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;padding:10px 16px}
+  .tab{
+    flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--muted);
+    padding:8px 13px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;
+    display:flex;align-items:center;gap:7px;white-space:nowrap;
+  }
+  .tab:hover{border-color:#c4cbe0}
+  .tab.active{background:var(--brand);border-color:var(--brand);color:#fff}
+  .tab .pct{font-size:11px;opacity:.75;font-weight:700}
+  /* ---------- layout ---------- */
+  main{max-width:1000px;margin:0 auto;padding:20px 16px 80px}
+  .unit-head{margin:6px 0 2px}
+  .unit-head .kicker{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+  .unit-head h2{margin:4px 0 10px;font-size:20px}
+  .unitbar{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+  .unitbar .bar{flex:1;height:9px;background:#e4e9f4}
+  .unitbar .bar > i{background:linear-gradient(90deg,#3b4fd8,#6d4bd8)}
+  .unitbar small{font-size:12px;color:var(--muted);font-weight:700;min-width:64px;text-align:right}
+  h3.sec{
+    font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+    margin:26px 0 12px;font-weight:800;display:flex;align-items:center;gap:9px;
+  }
+  h3.sec::after{content:"";flex:1;height:1px;background:var(--line)}
+  /* ---------- qa cards ---------- */
+  .qa{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;box-shadow:var(--shadow);overflow:hidden}
+  .qa .q{
+    display:flex;gap:12px;align-items:flex-start;padding:15px 16px;cursor:pointer;user-select:none;
+  }
+  .qa .q:hover{background:#fafbff}
+  .qa .num{
+    flex:0 0 auto;width:26px;height:26px;border-radius:8px;background:#eef1fb;color:var(--brand);
+    font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px;
+  }
+  .qa.done .num{background:var(--okbg);color:var(--ok)}
+  .qa .qtext{flex:1;font-weight:600;font-size:14.5px}
+  .qa .chev{color:#9aa6c0;font-size:13px;transition:transform .25s;margin-top:2px}
+  .qa.open .chev{transform:rotate(90deg)}
+  .qa .a{
+    max-height:0;overflow:hidden;transition:max-height .3s ease;
+    border-top:0 solid var(--line);background:#fbfcff;
+  }
+  .qa.open .a{max-height:1400px;border-top:1px solid var(--line)}
+  .qa .a-inner{padding:14px 16px 16px 54px}
+  .qa .a-text{white-space:pre-wrap;font-size:14.3px;color:#2c3648}
+  .mark{
+    margin-top:12px;display:inline-flex;align-items:center;gap:8px;font-size:12.5px;
+    font-weight:700;color:var(--muted);cursor:pointer;background:#f1f3fa;
+    border:1px solid var(--line);padding:6px 12px;border-radius:999px;
+  }
+  .mark.on{background:var(--okbg);color:var(--ok);border-color:#bfe6d3}
+  /* ---------- mcq ---------- */
+  .mcq{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;box-shadow:var(--shadow);padding:15px 16px}
+  .mcq .mq{font-weight:600;font-size:14.5px;display:flex;gap:12px}
+  .mcq .mnum{
+    flex:0 0 auto;width:26px;height:26px;border-radius:8px;background:#f1eefc;color:var(--brand2);
+    font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px;
+  }
+  .opts{margin:12px 0 0 38px;display:grid;gap:8px}
+  .opt{
+    text-align:left;border:1px solid var(--line);background:#fff;border-radius:10px;
+    padding:10px 13px;font-size:14px;cursor:pointer;color:var(--ink);display:flex;gap:10px;align-items:center;
+    transition:border-color .15s,background .15s;
+  }
+  .opt:hover:not(.locked){border-color:#b9c2dd;background:#fafbff}
+  .opt .lbl{font-weight:800;color:#8b96b0;font-size:12.5px;min-width:14px}
+  .opt.correct{background:var(--okbg);border-color:#9fd9bd;color:#0c6b47;font-weight:600}
+  .opt.correct .lbl{color:var(--ok)}
+  .opt.wrong{background:var(--badbg);border-color:#f0b8b1;color:#a5301f;font-weight:600}
+  .opt.wrong .lbl{color:var(--bad)}
+  .opt.locked{cursor:default}
+  .fb{margin:10px 0 0 38px;font-size:13px;font-weight:700}
+  .fb.good{color:var(--ok)} .fb.bad{color:var(--bad)}
+  .hidden{display:none}
+  /* ---------- footer note ---------- */
+  .tip{
+    background:#eef1fb;border:1px dashed #c4cbe0;border-radius:14px;padding:14px 16px;
+    font-size:13px;color:#3a4568;
+  }
+  footer{max-width:1000px;margin:0 auto;padding:0 16px 60px;color:var(--muted);font-size:12.5px;text-align:center}
+  @media(max-width:560px){
+    header h1{font-size:20px}
+    .qa .a-inner{padding-left:16px}
+    .opts,.fb{margin-left:0}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="headrow">
+      <div>
+        <h1>Class 11 AI - Exam Revision</h1>
+        <p>Part A (Units 1-2) &amp; Part B (Units 1-4) &middot; short answers + MCQs</p>
+      </div>
+      <button class="reset" id="reset">Reset progress</button>
+    </div>
+    <div class="progress-shell">
+      <div class="progress-top"><span>Overall revision progress</span><span id="overallTxt">0 / 0</span></div>
+      <div class="bar"><i id="overallBar"></i></div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs"><div class="tabs-inner" id="tabs"></div></nav>
+
+<main id="app"></main>
+
+<footer>
+  Built for revision. Answers are written to be about 30-40 words for 2-mark questions and slightly longer for 4-mark questions.
+  Progress is saved in your browser.
+</footer>
+
+<script>
+const UNITS = [{"id": "a1", "part": "Part A", "title": "Unit 1: Communication Skills - III", "short": "A1", "qa": [{"q": "What is communication? Mention any two elements of the communication process.", "a": "Communication is the process of exchanging ideas, information and feelings between a sender and a receiver through a shared medium. Its key elements are the sender, message, channel, receiver and feedback."}, {"q": "Differentiate between verbal and non-verbal communication.", "a": "Verbal communication uses words, either spoken or written. Non-verbal communication uses body language, gestures, facial expressions and tone without words. Both together make a message clearer and more effective."}, {"q": "What is active listening? Mention two characteristics of an active listener.", "a": "Active listening means fully concentrating on, understanding and responding to a speaker. Two characteristics are maintaining eye contact and asking clarifying questions, while giving feedback through nods or brief summaries."}, {"q": "What is feedback in communication? Why is it important?", "a": "Feedback is the receiver's response that tells the sender whether the message was understood. It is important because it confirms understanding, corrects misunderstandings and makes communication a two-way, effective process."}, {"q": "Define formal and informal communication with one example each.", "a": "Formal communication follows official rules and hierarchy, for example a manager writing a report to the director. Informal communication is casual and unofficial, for example two colleagues chatting about a cricket match."}, {"q": "What are communication barriers? Mention any two.", "a": "Communication barriers are obstacles that disturb or block the smooth exchange of messages. Two common barriers are physical noise, such as loud machinery, and language differences, such as unfamiliar words or strong accents."}, {"q": "What is body language? Give two examples of positive body language.", "a": "Body language is non-verbal communication through posture, gestures and expressions. Two examples of positive body language are keeping an open posture with relaxed arms, and maintaining steady, friendly eye contact while speaking."}, {"q": "Differentiate between hearing and listening.", "a": "Hearing is the passive, physical act of receiving sound through the ears. Listening is an active mental process of paying attention, understanding and interpreting what is heard. We hear automatically, but listening needs conscious effort."}, {"q": "What is written communication? Mention two advantages.", "a": "Written communication conveys messages through written words, such as emails, letters and reports. Two advantages are that it creates a permanent record for future reference, and allows careful, well-organised expression of complex ideas."}, {"q": "What is the importance of asking questions during communication?", "a": "Asking questions clarifies doubts, gathers missing information and shows genuine interest in the speaker. It keeps communication two-way, prevents misunderstandings, and helps both parties reach a shared, accurate understanding of the topic."}, {"q": "Explain any four barriers to effective communication with suitable examples.", "a": "Physical barriers, like loud noise, block hearing. Language barriers, like technical jargon, confuse listeners. Psychological barriers, like fear or stress, reduce attention. Cultural barriers, like different customs, cause messages to be misread by the receiver."}, {"q": "Explain the four major types of communication with examples.", "a": "Verbal communication uses words, e.g. a phone call. Non-verbal uses gestures, e.g. a smile. Written uses text, e.g. an email. Visual uses images or signs, e.g. traffic lights. Together they carry messages effectively."}, {"q": "Describe the importance of active listening in effective communication.", "a": "Active listening ensures the receiver truly understands the speaker's message. It builds trust, reduces mistakes and encourages open sharing of ideas. It also allows accurate feedback, so the sender knows the message was received as intended."}, {"q": "Explain any four principles of effective communication.", "a": "Clarity means using simple words. Completeness means giving all needed information. Conciseness means avoiding unnecessary detail. Courtesy means being polite and respectful. Following these principles makes messages easy to understand and respond to."}, {"q": "Differentiate between verbal and non-verbal communication with four points.", "a": "Verbal uses words; non-verbal uses gestures and expressions. Verbal can be spoken or written; non-verbal is mostly visual. Verbal suits detailed messages; non-verbal shows emotions and attitude. Verbal leaves a record; non-verbal is instant but not recorded."}, {"q": "Explain how body language can affect the effectiveness of communication.", "a": "Body language adds emotion and meaning to words. Open posture, eye contact and a smile make the speaker seem confident and trustworthy. Crossed arms or avoiding eye contact can suggest rudeness or dishonesty, weakening the message."}, {"q": "A student is unable to understand instructions because of noise, language differences and lack of attention. Identify and explain the communication barriers involved.", "a": "Noise is a physical barrier that blocks sound. Language difference is a semantic barrier that confuses meaning. Lack of attention is a psychological barrier caused by disinterest or stress. Removing noise, simplifying language and focusing attention can overcome these barriers."}, {"q": "Explain the role of feedback in the communication process with an example.", "a": "Feedback is the receiver's reply, confirming whether the message was understood. For example, if a teacher explains a sum, a student's correct answer proves understanding. Without feedback, the sender cannot know whether communication succeeded."}, {"q": "Describe four ways through which a person can improve their communication skills.", "a": "Listen actively without interrupting. Speak clearly and choose simple words. Practise reading and writing regularly. Observe good communicators and seek feedback. These habits gradually make a person more confident and effective in every conversation."}, {"q": "Explain the importance of communication skills in an AI-related workplace.", "a": "AI professionals must explain technical results to non-technical clients and work in teams. Clear communication ensures correct data requirements, avoids project errors and presents findings convincingly. It builds trust and helps AI solutions be understood and accepted."}], "mcq": [{"q": "Which of these is an element of the communication process?", "o": ["Sender", "Compiler", "Database", "Loop"], "c": 0}, {"q": "Body language is an example of:", "o": ["Verbal communication", "Non-verbal communication", "Written communication", "Digital communication"], "c": 1}, {"q": "Active listening involves:", "o": ["Interrupting the speaker", "Paying full attention and responding", "Talking loudly", "Ignoring the speaker"], "c": 1}, {"q": "Feedback in communication means:", "o": ["The first message sent", "The receiver's response", "The channel used", "The noise in the room"], "c": 1}, {"q": "Loud noise during a conversation is which type of barrier?", "o": ["Physical", "Semantic", "Cultural", "Economic"], "c": 0}, {"q": "Hearing differs from listening because hearing is:", "o": ["Active and mental", "Passive and physical", "Written and formal", "Emotional and cultural"], "c": 1}, {"q": "An example of formal communication is:", "o": ["Chatting with a friend", "An official report to a manager", "A joke in the corridor", "A casual text message"], "c": 1}, {"q": "Which of these is positive body language?", "o": ["Crossed arms", "Avoiding eye contact", "Open posture and a smile", "Turning away from the listener"], "c": 2}, {"q": "A permanent record is an advantage of:", "o": ["Verbal communication", "Written communication", "Gestures", "Silence"], "c": 1}, {"q": "Asking questions during communication helps to:", "o": ["Confuse the speaker", "Clarify doubts and gather information", "End the talk quickly", "Show disinterest"], "c": 1}]}, {"id": "a2", "part": "Part A", "title": "Unit 2: Self-Management Skills - III", "short": "A2", "qa": [{"q": "What is self-management? Give two examples.", "a": "Self-management is the ability to control one's own behaviour, emotions and time to achieve goals. Examples include making a study timetable and completing work on time, and staying calm during an argument."}, {"q": "What is self-motivation?", "a": "Self-motivation is the inner drive that makes a person act and keep working towards a goal without external pressure or reward. It helps students study regularly and overcome laziness through personal determination."}, {"q": "Define stress management.", "a": "Stress management is the set of techniques used to control and reduce tension caused by pressure. It includes deep breathing, exercise, good sleep, time planning and positive thinking, which keep the mind calm and healthy."}, {"q": "What is goal setting?", "a": "Goal setting is the process of deciding clear, specific targets to achieve within a fixed time. It gives direction, motivates effort, and helps measure progress towards studies, career or personal improvement."}, {"q": "Differentiate between short-term and long-term goals.", "a": "Short-term goals are achieved in a short period, like finishing homework today. Long-term goals take months or years, like becoming an AI engineer. Short-term goals support and gradually lead to long-term goals."}, {"q": "What is time management? Mention two benefits.", "a": "Time management is planning and controlling how time is used for different tasks. Two benefits are completing work on time with less stress, and getting more done through proper priority setting and planning."}, {"q": "What is self-awareness?", "a": "Self-awareness is the ability to recognise one's own emotions, strengths, weaknesses, values and behaviour. It helps a person understand how others see them and guides better personal and professional decisions."}, {"q": "What is positive thinking?", "a": "Positive thinking is the habit of focusing on good possibilities and solutions instead of problems. It builds confidence, reduces stress, improves health and helps a person handle failure in a constructive way."}, {"q": "Mention any two techniques for managing stress.", "a": "Two techniques are deep breathing or meditation to calm the mind, and regular physical exercise or a hobby to release tension. Both reduce anxiety and refresh the body and mind."}, {"q": "What is the importance of maintaining a work-life balance?", "a": "Work-life balance means giving proper time to work and to family, rest and hobbies. It reduces stress and burnout, improves health, keeps relationships strong, and helps a person stay productive and happy."}, {"q": "Explain any four characteristics of a self-managed person.", "a": "A self-managed person sets clear goals and plans time well. They stay disciplined and complete tasks without reminders. They control emotions and stay calm under pressure. They take responsibility for their actions and learn from mistakes."}, {"q": "Explain the SMART method of goal setting.", "a": "SMART goals are Specific, Measurable, Achievable, Relevant and Time-bound. For example, 'score 80% in AI this term' is specific and measurable. The method makes goals clear, realistic and easy to track and achieve."}, {"q": "Describe four effective techniques for managing stress.", "a": "Exercise releases tension and improves mood. Deep breathing and meditation calm the mind. Planning time reduces last-minute pressure. Talking to friends or family and taking proper sleep also help manage stress effectively."}, {"q": "Explain four ways to improve time-management skills.", "a": "Prepare a daily to-do list and set priorities. Use a timetable and avoid procrastination. Break big tasks into small steps. Remove distractions like phones while studying. These habits help complete work on time with less stress."}, {"q": "Differentiate between positive and negative thinking with suitable examples.", "a": "Positive thinking looks for solutions and hope; a student says, 'I can pass with more practice.' Negative thinking focuses on problems and failure; the student says, 'I will surely fail.' Positivity motivates effort, while negativity reduces confidence."}, {"q": "Explain how self-motivation helps a student achieve career goals.", "a": "Self-motivation makes a student study regularly without being forced, overcome failures, and keep working towards long-term goals. It builds discipline, persistence and confidence, which are essential for building a successful career."}, {"q": "A student has many assignments and examinations but keeps postponing work. Suggest four time-management strategies.", "a": "The student should list all tasks with deadlines and rank them by priority. Break large assignments into smaller daily parts. Fix a study timetable and follow it strictly. Remove distractions and avoid delaying tasks until the last day."}, {"q": "Explain the importance of self-awareness in professional development.", "a": "Self-awareness helps a professional know their strengths and weaknesses, so they can improve skills and choose suitable roles. It improves teamwork, communication and emotional control, leading to better performance and steady career growth."}, {"q": "Describe four ways to develop a positive attitude.", "a": "Start the day with positive thoughts and gratitude. Surround yourself with supportive, optimistic people. Learn from failures instead of blaming yourself. Stay healthy through exercise and sleep. These habits slowly build a lasting positive attitude."}, {"q": "Explain how self-management skills can help an AI professional handle challenging projects.", "a": "Self-management helps an AI professional plan work, meet deadlines and stay calm during technical problems. Discipline and focus improve coding quality, while emotional control and self-motivation help them learn new tools and finish difficult projects."}], "mcq": [{"q": "Self-management means:", "o": ["Managing other people", "Controlling one's own behaviour, emotions and time", "Managing money only", "Managing a company"], "c": 1}, {"q": "SMART goals stand for Specific, Measurable, Achievable, Relevant and:", "o": ["Time-bound", "Technical", "Total", "Tough"], "c": 0}, {"q": "Which of these is a short-term goal?", "o": ["Becoming an AI engineer", "Finishing homework today", "Buying a house", "Retiring rich"], "c": 1}, {"q": "A healthy technique for managing stress is:", "o": ["Skipping sleep", "Deep breathing and exercise", "Working non-stop", "Ignoring problems"], "c": 1}, {"q": "Self-motivation means working:", "o": ["Only for rewards", "From inner drive without external pressure", "Only when forced", "Never at all"], "c": 1}, {"q": "Time management helps to:", "o": ["Waste time", "Complete work on time with less stress", "Increase stress", "Avoid all planning"], "c": 1}, {"q": "Self-awareness is the ability to recognise:", "o": ["Others' faults", "One's own emotions, strengths and weaknesses", "The weather", "Market trends"], "c": 1}, {"q": "A characteristic of a self-managed person is:", "o": ["Laziness", "Discipline and responsibility", "Always being late", "Frequent anger"], "c": 1}, {"q": "Positive thinking focuses on:", "o": ["Problems and failure", "Solutions and hope", "Blaming others", "Fear and worry"], "c": 1}, {"q": "Work-life balance means giving time to:", "o": ["Only work", "Work, family, rest and hobbies", "Only rest", "Only hobbies"], "c": 1}]}, {"id": "b1", "part": "Part B", "title": "Unit 1: Introduction - AI for Everyone", "short": "B1", "qa": [{"q": "Define Artificial Intelligence.", "a": "Artificial Intelligence is the branch of computer science that builds machines and software able to perform tasks that normally require human intelligence, such as learning, reasoning, understanding language and solving problems."}, {"q": "Mention any two applications of AI.", "a": "Two applications are virtual assistants like Siri and Alexa, which understand speech, and recommendation systems on Netflix or Amazon, which suggest content based on user preferences and past behaviour."}, {"q": "What is Machine Learning?", "a": "Machine Learning is a part of AI in which computers learn patterns from data and improve their performance with experience, without being explicitly programmed for every task. Spam email filters are a common example."}, {"q": "What is Natural Language Processing?", "a": "Natural Language Processing is an AI field that enables computers to understand, interpret and generate human language, both written and spoken. It powers chatbots, translation apps, voice assistants and sentiment analysis tools."}, {"q": "What is Computer Vision?", "a": "Computer Vision is an AI field that enables computers to interpret and understand images and videos. It is used in face recognition, self-driving cars, medical imaging and quality checking in factories."}, {"q": "Differentiate between AI and Machine Learning.", "a": "AI is the broad science of making machines intelligent. Machine Learning is a subset of AI where systems learn from data instead of fixed rules. All Machine Learning is AI, but all AI is not Machine Learning."}, {"q": "Mention two examples of AI used in everyday life.", "a": "Two everyday examples are Google Maps, which finds the best route using traffic data, and email spam filters, which automatically separate unwanted messages using Machine Learning."}, {"q": "What is the role of data in AI?", "a": "Data is the fuel of AI. Systems learn patterns, make predictions and improve accuracy from large amounts of good-quality data. Without sufficient, relevant and clean data, an AI model cannot learn effectively."}, {"q": "What is an AI-enabled system?", "a": "An AI-enabled system is any device or software that uses AI techniques to sense its environment, learn from data and take smart decisions, such as a smart speaker or a self-driving car."}, {"q": "Mention two advantages and two limitations of AI.", "a": "Advantages: AI works fast without tiredness and handles huge data accurately. Limitations: AI lacks common sense and emotions, and depends heavily on good data, so biased data gives wrong results."}, {"q": "Explain the major domains of Artificial Intelligence.", "a": "Major domains include Machine Learning, where systems learn from data; Natural Language Processing, for human language; Computer Vision, for images; Robotics, for physical action; and Expert Systems, which give advice using stored knowledge."}, {"q": "Explain four real-life applications of AI.", "a": "Healthcare uses AI for disease detection from scans. Education uses it for personalised learning. Transport uses it in self-driving cars and traffic control. Banking uses it for fraud detection and credit scoring. AI thus improves speed and accuracy."}, {"q": "Differentiate between Artificial Intelligence, Machine Learning and Deep Learning.", "a": "AI is the broad goal of intelligent machines. Machine Learning is a subset that learns from data. Deep Learning is a further subset using multi-layered neural networks. Deep Learning is part of ML, and ML is part of AI."}, {"q": "Explain the role of AI in healthcare, education, transportation and banking.", "a": "In healthcare AI detects diseases early from images. In education it personalises lessons to each student. In transportation it powers self-driving cars and traffic management. In banking it detects fraud and assesses loan risk quickly and accurately."}, {"q": "Explain the relationship between data, algorithms and AI systems.", "a": "Data provides the examples and patterns. Algorithms are the step-by-step methods that process this data to find patterns. Together they form an AI system that can learn and make predictions. Good data and correct algorithms give accurate results."}, {"q": "Describe four advantages of Artificial Intelligence.", "a": "AI works continuously without fatigue. It processes huge data very quickly and accurately. It reduces human error in repetitive tasks. It also handles dangerous jobs, like bomb disposal, keeping people safe."}, {"q": "Explain four limitations or challenges associated with AI.", "a": "AI lacks emotions, creativity and common sense. It needs large amounts of quality data. Biased data leads to unfair decisions. It is expensive to build, can replace jobs, and raises privacy concerns for users."}, {"q": "Explain how Computer Vision and NLP are used in real-life applications.", "a": "Computer Vision reads images, so it powers face unlock, medical scan analysis and self-driving cars. NLP reads and generates language, so it powers chatbots, voice assistants and translation apps. Both help machines understand the human world."}, {"q": "A smart assistant understands a user's spoken question and provides an answer. Identify the AI domains involved and explain their roles.", "a": "Speech recognition converts the spoken words to text. NLP understands the meaning of the question. A knowledge base and Machine Learning find the answer. Text-to-speech then speaks the reply, combining several AI domains in one system."}, {"q": "Explain how AI is transforming different sectors of society.", "a": "AI is changing healthcare through early diagnosis, education through personalised learning, farming through crop monitoring, business through automation, and transport through self-driving vehicles. It increases efficiency and convenience, while raising new ethical and job-related questions."}], "mcq": [{"q": "AI stands for:", "o": ["Automatic Information", "Artificial Intelligence", "Advanced Internet", "Applied Integration"], "c": 1}, {"q": "Machine Learning is a subset of:", "o": ["Artificial Intelligence", "Hardware", "The Internet", "Databases"], "c": 0}, {"q": "NLP mainly deals with:", "o": ["Images", "Human language", "Numbers only", "Hardware parts"], "c": 1}, {"q": "Computer Vision helps computers understand:", "o": ["Sound", "Images and videos", "Text only", "Music"], "c": 1}, {"q": "Which of these is a real-life AI application?", "o": ["Self-driving car", "Pencil", "Paper", "Chair"], "c": 0}, {"q": "Deep Learning uses:", "o": ["Simple fixed rules", "Multi-layered neural networks", "Only databases", "Typewriters"], "c": 1}, {"q": "A limitation of AI is that it:", "o": ["Never gets tired", "Lacks emotions and common sense", "Works very fast", "Handles big data"], "c": 1}, {"q": "Data in AI is important because it:", "o": ["Is useless", "Provides patterns for learning", "Slows the model down", "Replaces algorithms"], "c": 1}, {"q": "An AI-enabled system can:", "o": ["Only print pages", "Sense, learn and take smart decisions", "Only store files", "Only do calculations"], "c": 1}, {"q": "An example of AI in healthcare is:", "o": ["Disease detection from scans", "Cooking food", "Driving only", "Painting walls"], "c": 0}]}, {"id": "b2", "part": "Part B", "title": "Unit 2: Unlocking Your Future in AI", "short": "B2", "qa": [{"q": "Mention any two career opportunities in Artificial Intelligence.", "a": "Two career options are Machine Learning Engineer, who builds learning models, and Data Scientist, who analyses data to find useful insights for organisations and businesses."}, {"q": "What skills are required to become an AI professional?", "a": "An AI professional needs technical skills like programming, mathematics, statistics and data handling, along with soft skills such as communication, problem-solving, teamwork and continuous learning."}, {"q": "What is an AI Engineer?", "a": "An AI Engineer designs, builds and deploys AI models and systems. They combine programming, data and algorithms to create practical AI applications like chatbots, recommendation systems and vision tools."}, {"q": "What does a Data Scientist do?", "a": "A Data Scientist collects, cleans and analyses large data to find patterns and insights. They use statistics and programming to help organisations make better decisions and to build predictive models."}, {"q": "What is the role of a Machine Learning Engineer?", "a": "A Machine Learning Engineer builds, trains and improves machine learning models. They prepare data, select algorithms, test models and deploy them into real products, working closely with data scientists and software teams."}, {"q": "Why is mathematics important in AI?", "a": "Mathematics gives AI its foundation. Linear algebra handles data as vectors and matrices, probability and statistics manage uncertainty and learning, and calculus drives model optimisation. Without maths, AI models cannot be built or improved."}, {"q": "Why is programming important for an AI career?", "a": "Programming turns AI ideas into working systems. Languages like Python let professionals process data, build models, test results and deploy applications. It is the practical tool through which every AI solution is actually created."}, {"q": "Mention two soft skills required by AI professionals.", "a": "Two important soft skills are communication, to explain technical results to non-technical people, and teamwork, to collaborate with different specialists. Problem-solving and adaptability are also valuable."}, {"q": "What is continuous learning?", "a": "Continuous learning is the habit of regularly updating one's knowledge and skills throughout life. In AI, technology changes fast, so professionals must keep learning new tools, algorithms and methods to stay relevant."}, {"q": "Why is ethical awareness important for AI professionals?", "a": "Ethical awareness helps AI professionals build fair, safe and transparent systems. It prevents bias, protects user privacy and ensures AI is used responsibly, so technology benefits society instead of harming it."}, {"q": "Explain four career opportunities available in the field of AI.", "a": "Data Scientist analyses data for insights. Machine Learning Engineer builds and deploys models. AI Engineer creates AI applications. AI Research Scientist develops new algorithms. Other roles include NLP Engineer, Computer Vision Engineer and AI Product Manager."}, {"q": "Describe the technical skills required for an AI career.", "a": "AI professionals need programming, mainly Python, along with mathematics, statistics and probability. They must handle data using tools like Pandas, build models with libraries like scikit-learn and TensorFlow, and understand databases, algorithms and cloud platforms."}, {"q": "Explain the importance of mathematics, statistics and programming in AI.", "a": "Mathematics provides the theory behind algorithms. Statistics helps analyse data and measure model accuracy. Programming converts these ideas into working code. Together they let professionals build, train, test and improve reliable AI systems."}, {"q": "Explain four soft skills required by an AI professional.", "a": "Communication helps explain complex results clearly. Teamwork enables collaboration with specialists. Problem-solving helps tackle difficult technical issues. Adaptability and continuous learning keep professionals updated as AI technology changes rapidly."}, {"q": "Differentiate between the roles of a Data Scientist, AI Engineer and Machine Learning Engineer.", "a": "A Data Scientist analyses data to find insights and build models. A Machine Learning Engineer trains and deploys those models into products. An AI Engineer builds complete AI applications. Their work overlaps, but focus differs from analysis to engineering."}, {"q": "Explain how continuous learning can help an AI professional.", "a": "Continuous learning keeps an AI professional updated with new algorithms, tools and frameworks. It improves problem-solving, enables career growth and promotions, and prevents skills from becoming outdated in the fast-changing technology field."}, {"q": "Describe four steps a student can follow to build a career in AI.", "a": "First, build strong maths and Python basics. Next, learn AI and machine learning through online courses. Then do small projects and internships for practice. Finally, earn certifications, build a portfolio and apply for AI jobs."}, {"q": "Explain the importance of communication and teamwork in AI projects.", "a": "AI projects involve data experts, developers and business teams. Clear communication ensures correct requirements and explains results to non-technical clients. Teamwork combines different skills, speeds up work and reduces mistakes, making projects successful."}, {"q": "A student wants to become a Machine Learning Engineer. Explain four skills the student should develop.", "a": "The student should master Python programming and mathematics, especially statistics and linear algebra. They should learn machine learning algorithms and frameworks like TensorFlow. Data handling and model deployment skills, plus teamwork, are also essential."}, {"q": "Explain how AI is creating new career opportunities across different industries.", "a": "AI has created roles like data scientist, ML engineer and AI ethicist. Healthcare needs AI for diagnosis, finance for fraud detection, agriculture for crop monitoring and marketing for personalisation. Every industry now requires AI-skilled professionals, expanding job opportunities widely."}], "mcq": [{"q": "Which of these is an AI career?", "o": ["Data Scientist", "Carpenter", "Truck driver", "Farmer"], "c": 0}, {"q": "A Data Scientist mainly:", "o": ["Builds houses", "Analyses data for insights", "Fixes cars", "Sells goods"], "c": 1}, {"q": "A Machine Learning Engineer:", "o": ["Only designs logos", "Builds and deploys ML models", "Writes novels", "Manages accounts"], "c": 1}, {"q": "Mathematics is important in AI because it:", "o": ["Is only decorative", "Forms the foundation of algorithms", "Slows down the work", "Is not needed at all"], "c": 1}, {"q": "The most common programming language for AI is:", "o": ["Python", "HTML", "CSS", "SQL only"], "c": 0}, {"q": "A soft skill for AI professionals is:", "o": ["Communication", "Soldering", "Typing speed", "Painting"], "c": 0}, {"q": "Continuous learning means:", "o": ["Learning only once", "Regularly updating skills throughout life", "Never learning again", "Only reading books"], "c": 1}, {"q": "Ethical awareness in AI helps to:", "o": ["Increase bias", "Build fair and safe systems", "Break user privacy", "Ignore users"], "c": 1}, {"q": "An AI Engineer mainly:", "o": ["Cooks food", "Designs, builds and deploys AI systems", "Drives trucks", "Sells tickets"], "c": 1}, {"q": "AI is creating new jobs across industries because:", "o": ["It is useless", "Every sector now needs AI skills", "It only reduces jobs", "It is illegal"], "c": 1}]}, {"id": "b3", "part": "Part B", "title": "Unit 3: Python Programming", "short": "B3", "qa": [{"q": "What is Python? Mention two features of Python.", "a": "Python is a high-level, interpreted programming language known for simple, readable code. Two features are that it is easy to learn, and it is free and open-source with a large collection of ready-made libraries."}, {"q": "What is a variable in Python?", "a": "A variable is a named memory location used to store data values that can change during a program. For example, x = 10 stores the value 10 in the variable named x."}, {"q": "Define a data type with two examples.", "a": "A data type tells the kind of value a variable holds and what operations can be done on it. Examples are int for whole numbers like 5, and str for text like \"hello\"."}, {"q": "What is the difference between = and == in Python?", "a": "The single equals sign = is the assignment operator; it stores a value in a variable, as in x = 5. The double equals sign == is the comparison operator; it checks whether two values are equal."}, {"q": "What are comments in Python?", "a": "Comments are lines in a program that are ignored by the interpreter and used to explain code. Single-line comments start with #, and multi-line comments are written using triple quotes."}, {"q": "What is type conversion?", "a": "Type conversion is changing a value from one data type to another. For example, int(\"5\") converts the string \"5\" into the integer 5, and float(3) converts the integer 3 into 3.0."}, {"q": "Differentiate between int and float.", "a": "The int data type stores whole numbers without a decimal point, such as 7 or -20. The float data type stores numbers with a decimal point, such as 3.14 or 0.5."}, {"q": "What is a conditional statement?", "a": "A conditional statement runs a block of code only when a given condition is true. Python uses if, if-else and if-elif-else statements to make decisions in a program."}, {"q": "What is a loop? Name two types of loops.", "a": "A loop repeats a block of statements multiple times until a condition is met. The two main types in Python are the for loop, used for a fixed sequence, and the while loop, used while a condition is true."}, {"q": "What is a function in Python?", "a": "A function is a named block of reusable code that performs a specific task and runs only when called. It is defined using the def keyword and may accept parameters and return a value."}, {"q": "Explain the different basic data types in Python with examples.", "a": "Python's basic data types are int for whole numbers (10), float for decimals (3.5), str for text (\"AI\"), bool for True or False, and complex for complex numbers. Lists, tuples, sets and dictionaries are collection data types."}, {"q": "Explain arithmetic, relational and logical operators with examples.", "a": "Arithmetic operators do maths, like +, -, *, / and %. Relational operators compare values, like >, < and ==, returning True or False. Logical operators and, or and not combine conditions in decision-making."}, {"q": "Explain the use of if, if-else and if-elif-else statements.", "a": "if runs code when a condition is true. if-else runs one block when true and another when false. if-elif-else checks several conditions in order and runs the matching block, useful for grading or menu choices."}, {"q": "Differentiate between for and while loops with examples.", "a": "A for loop repeats a fixed number of times over a sequence, e.g. for i in range(5). A while loop repeats as long as a condition stays true, e.g. while x < 5. Use for when the count is known, while otherwise."}, {"q": "Write a Python program to accept two numbers and display their sum, difference, product and quotient.", "a": "a = int(input(\"Enter first number: \"))\nb = int(input(\"Enter second number: \"))\nprint(\"Sum:\", a + b)\nprint(\"Difference:\", a - b)\nprint(\"Product:\", a * b)\nprint(\"Quotient:\", a / b)"}, {"q": "Write a Python program to check whether a number is positive, negative or zero.", "a": "n = int(input(\"Enter a number: \"))\nif n > 0:\n    print(\"Positive\")\nelif n < 0:\n    print(\"Negative\")\nelse:\n    print(\"Zero\")"}, {"q": "Write a Python program to find whether a number is even or odd.", "a": "n = int(input(\"Enter a number: \"))\nif n % 2 == 0:\n    print(\"Even\")\nelse:\n    print(\"Odd\")"}, {"q": "Write a Python program to calculate the largest of three numbers.", "a": "a = int(input(\"Enter first: \"))\nb = int(input(\"Enter second: \"))\nc = int(input(\"Enter third: \"))\nif a >= b and a >= c:\n    print(\"Largest:\", a)\nelif b >= c:\n    print(\"Largest:\", b)\nelse:\n    print(\"Largest:\", c)"}, {"q": "Explain the importance of functions in Python programming with an example.", "a": "Functions avoid repeating code, make programs shorter and easier to read, and allow the same logic to be reused many times. For example, a function add(a, b) can be called again and again to add different numbers."}, {"q": "Write a Python program using a loop to print the first 10 natural numbers and their sum.", "a": "s = 0\nfor i in range(1, 11):\n    print(i)\n    s = s + i\nprint(\"Sum =\", s)"}], "mcq": [{"q": "Which keyword defines a function in Python?", "o": ["def", "fun", "function", "define"], "c": 0}, {"q": "Which of these is a valid variable name?", "o": ["2name", "name2", "my-name", "class"], "c": 1}, {"q": "The data type of 3.14 is:", "o": ["int", "float", "str", "bool"], "c": 1}, {"q": "Which operator checks equality in Python?", "o": ["=", "==", "=>", "<>"], "c": 1}, {"q": "A single-line comment in Python starts with:", "o": ["//", "#", "/*", "--"], "c": 1}, {"q": "Which loop runs while a condition is true?", "o": ["for", "while", "if", "def"], "c": 1}, {"q": "What does int(\"5\") do?", "o": ["Makes it a string", "Converts the string \"5\" to the integer 5", "Gives an error", "Adds 5 to it"], "c": 1}, {"q": "Which function takes input from the user?", "o": ["print()", "input()", "def()", "type()"], "c": 1}, {"q": "The result of 7 % 2 is:", "o": ["3", "1", "3.5", "0"], "c": 1}, {"q": "Which statement checks multiple conditions in order?", "o": ["if-elif-else", "for", "while", "def"], "c": 0}]}, {"id": "b4", "part": "Part B", "title": "Unit 4: Introduction to Capstone Project", "short": "B4", "qa": [{"q": "What is a Capstone Project?", "a": "A Capstone Project is a final, comprehensive project in which students apply all the knowledge and skills learned during a course to solve a real-world problem from start to finish."}, {"q": "What is the purpose of an AI Capstone Project?", "a": "The purpose is to let students practically apply AI concepts, build a working solution to a real problem, and demonstrate their technical, analytical and teamwork skills in a complete project."}, {"q": "What is problem identification?", "a": "Problem identification is the first stage of a project where the team finds and clearly defines a real-world problem that needs a solution and that AI can help solve."}, {"q": "What is problem scoping?", "a": "Problem scoping means defining the boundaries of a problem, including what will be included and excluded, who is affected, and what the project aims to achieve, so the work stays focused and manageable."}, {"q": "What is a project objective?", "a": "A project objective is a clear, specific statement of what the project intends to achieve. It guides the team's work and helps measure whether the final project has been successful."}, {"q": "What is a prototype?", "a": "A prototype is an early, working model of the final product. It is built quickly to test the main idea, gather feedback and improve the design before creating the complete solution."}, {"q": "What is meant by testing in a project?", "a": "Testing means checking whether the project works correctly and meets its objectives. It finds errors, measures accuracy and confirms that the solution performs well on new, unseen data."}, {"q": "Why is documentation important in a project?", "a": "Documentation records the project's aim, method, data, results and decisions. It helps others understand and use the work, supports maintenance, and serves as proof of the process for evaluation."}, {"q": "What is project evaluation?", "a": "Project evaluation is the process of judging how well the project met its objectives. It examines the results, accuracy, usefulness and limitations, and suggests improvements for future work."}, {"q": "Mention two important components of an AI project.", "a": "Two important components are data, which the model learns from, and the algorithm or model, which processes that data. Clear problem definition and proper testing are also essential for success."}, {"q": "Explain the major stages of an AI Capstone Project.", "a": "The stages are problem identification, problem scoping, data collection, data cleaning, model building and training, testing and evaluation, and finally documentation and presentation. Each stage moves the project from an idea to a working solution."}, {"q": "Explain the importance of identifying a real-world problem before developing an AI solution.", "a": "Identifying a real problem ensures the project is useful and relevant. It defines clear objectives, guides data collection and prevents wasted effort on unimportant issues, so the final AI solution truly helps its users."}, {"q": "Describe the process of problem scoping.", "a": "Problem scoping defines who is affected by the problem, what the exact issue is, where and when it occurs, and why it matters. It also sets the project's limits and goals so the team's effort stays focused and realistic."}, {"q": "Explain four important components of a successful AI project.", "a": "A clear problem statement gives direction. Good-quality data trains the model well. A suitable algorithm produces accurate results. Testing and evaluation confirm the solution works. Documentation and teamwork support the whole project."}, {"q": "Explain the role of data in an AI Capstone Project.", "a": "Data is the foundation of an AI project. The model learns patterns from it, so its quality, quantity and relevance directly decide accuracy. Collected data must be cleaned, labelled and divided into training and testing sets."}, {"q": "Describe the importance of testing and evaluation.", "a": "Testing checks the model's accuracy on new data and finds errors. Evaluation judges whether the project meets its objectives and is useful. Together they ensure the solution is reliable, correct and ready for real use."}, {"q": "Explain the importance of teamwork in an AI project.", "a": "AI projects need different skills such as data handling, coding, design and communication. Teamwork divides the work, combines varied ideas and speeds up problem-solving, while shared responsibility improves quality and reduces individual workload."}, {"q": "Describe four factors that should be considered while selecting an AI project topic.", "a": "The topic should solve a real problem. It should be feasible with the available data, time and skills. It should be interesting to the team. It should have clear objectives and measurable results so success can be judged."}, {"q": "A school wants to develop an AI system to predict students who may need academic support. Explain how the project can be planned from problem identification to evaluation.", "a": "First identify and scope the problem of low performance. Collect attendance, marks and activity data. Clean and prepare the data. Train a prediction model, test its accuracy and evaluate results. Finally document findings and present them to the school."}, {"q": "Explain how documentation and presentation contribute to the success of a Capstone Project.", "a": "Documentation records the aim, method, data and results, making the work understandable and reproducible. Presentation explains the project clearly to an audience. Together they show the team's effort, allow evaluation and help others reuse the solution."}], "mcq": [{"q": "A Capstone Project is:", "o": ["A small class test", "A final comprehensive project applying learned skills", "A long holiday", "A textbook chapter"], "c": 1}, {"q": "Problem identification means:", "o": ["Solving a problem blindly", "Finding and defining a real problem", "Ignoring all problems", "Creating new problems"], "c": 1}, {"q": "Problem scoping defines:", "o": ["The colour of the app", "The boundaries and goals of the problem", "The team's salary", "The team's lunch menu"], "c": 1}, {"q": "A prototype is:", "o": ["The final finished product", "An early working model for testing", "A written report", "A type of database"], "c": 1}, {"q": "Testing a project means:", "o": ["Deleting it", "Checking whether it works correctly", "Selling it", "Ignoring its errors"], "c": 1}, {"q": "Documentation is important because it:", "o": ["Wastes time", "Records the method and results", "Hides the work", "Slows the project down"], "c": 1}, {"q": "Project evaluation judges:", "o": ["The weather", "How well the objectives were met", "The colour scheme", "The team's names"], "c": 1}, {"q": "Data in an AI project is:", "o": ["Useless", "The foundation the model learns from", "Always optional", "Always perfect"], "c": 1}, {"q": "Teamwork in AI projects:", "o": ["Slows down work", "Combines varied skills and speeds up problem-solving", "Is unnecessary", "Causes only conflict"], "c": 1}, {"q": "Which is the first stage of an AI Capstone Project?", "o": ["Presentation", "Problem identification", "Testing", "Documentation"], "c": 1}]}];
+</script>
+<script>
+const KEY = "ai11-progress-v1";
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ state = {}; }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+function st(id){ if(!state[id]) state[id] = {}; return state[id]; }
+
+const LETTERS = ["A","B","C","D"];
+const app = document.getElementById("app");
+const tabsEl = document.getElementById("tabs");
+
+/* total countable items = qa + mcq across all units */
+const TOTAL = UNITS.reduce((n,u)=> n + u.qa.length + u.mcq.length, 0);
+function unitDone(u){
+  const s = st(u.id); let d = 0;
+  u.qa.forEach((_,i)=>{ if(s["q"+i]) d++; });
+  u.mcq.forEach((_,i)=>{ if(s["m"+i]!==undefined) d++; });
+  return d;
+}
+function unitTotal(u){ return u.qa.length + u.mcq.length; }
+function overallDone(){
+  return UNITS.reduce((n,u)=> n + unitDone(u), 0);
+}
+
+function renderTabs(active){
+  tabsEl.innerHTML = "";
+  UNITS.forEach(u=>{
+    const b = document.createElement("button");
+    b.className = "tab" + (u.id===active ? " active":"");
+    const d = unitDone(u), t = unitTotal(u);
+    b.innerHTML = escapeHtml(u.short) + " &middot; " + escapeHtml(u.part) +
+      ' <span class="pct">' + Math.round(d/t*100) + '%</span>';
+    b.onclick = ()=> render(u.id);
+    tabsEl.appendChild(b);
+  });
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function render(active){
+  renderTabs(active);
+  updateOverall();
+  const u = UNITS.find(x=>x.id===active) || UNITS[0];
+  app.innerHTML = "";
+  const head = document.createElement("div");
+  head.className = "unit-head";
+  head.innerHTML = '<div class="kicker">'+escapeHtml(u.part)+'</div><h2>'+escapeHtml(u.title)+'</h2>';
+  app.appendChild(head);
+
+  const ub = document.createElement("div");
+  ub.className = "unitbar";
+  ub.innerHTML = '<div class="bar"><i></i></div><small></small>';
+  app.appendChild(ub);
+
+  const sec1 = document.createElement("h3");
+  sec1.className = "sec"; sec1.textContent = "Short-answer questions";
+  app.appendChild(sec1);
+
+  const qwrap = document.createElement("div");
+  u.qa.forEach((item,i)=>{
+    const card = document.createElement("div");
+    card.className = "qa";
+    const q = document.createElement("div");
+    q.className = "q";
+    q.innerHTML = '<div class="num">'+(i+1)+'</div><div class="qtext">'+escapeHtml(item.q)+
+      '</div><div class="chev">&#9654;</div>';
+    const a = document.createElement("div");
+    a.className = "a";
+    a.innerHTML = '<div class="a-inner"><div class="a-text">'+escapeHtml(item.a)+
+      '</div><div class="mark" data-i="'+i+'">&#10003; Mark as revised</div></div>';
+    card.appendChild(q); card.appendChild(a);
+    q.onclick = ()=>{
+      card.classList.toggle("open");
+      if(card.classList.contains("open")){
+        st(u.id)["q"+i] = true; save(); refresh();
+      }
+    };
+    const mk = a.querySelector(".mark");
+    if(st(u.id)["q"+i]){ mk.classList.add("on"); mk.innerHTML = "&#10003; Revised"; card.classList.add("done"); }
+    mk.onclick = (ev)=>{
+      ev.stopPropagation();
+      const s = st(u.id);
+      if(s["q"+i]){ delete s["q"+i]; mk.classList.remove("on"); mk.innerHTML="&#10003; Mark as revised"; card.classList.remove("done"); }
+      else { s["q"+i]=true; mk.classList.add("on"); mk.innerHTML="&#10003; Revised"; card.classList.add("done"); }
+      save(); refresh();
+    };
+    qwrap.appendChild(card);
+  });
+  app.appendChild(qwrap);
+
+  const sec2 = document.createElement("h3");
+  sec2.className = "sec"; sec2.textContent = "Multiple choice - quick revision";
+  app.appendChild(sec2);
+
+  const mwrap = document.createElement("div");
+  u.mcq.forEach((item,i)=>{
+    const card = document.createElement("div");
+    card.className = "mcq";
+    const h = document.createElement("div");
+    h.className = "mq";
+    h.innerHTML = '<div class="mnum">'+(i+1)+'</div><div>'+escapeHtml(item.q)+'</div>';
+    card.appendChild(h);
+    const opts = document.createElement("div");
+    opts.className = "opts";
+    const picked = st(u.id)["m"+i];
+    item.o.forEach((text,oi)=>{
+      const b = document.createElement("button");
+      b.className = "opt";
+      b.innerHTML = '<span class="lbl">'+LETTERS[oi]+'</span><span>'+escapeHtml(text)+'</span>';
+      if(picked!==undefined){
+        b.classList.add("locked");
+        if(oi===item.c) b.classList.add("correct");
+        if(oi===picked && picked!==item.c) b.classList.add("wrong");
+      }
+      b.onclick = ()=>{
+        const s = st(u.id);
+        if(s["m"+i]!==undefined) return;
+        s["m"+i] = oi; save();
+        card.querySelectorAll(".opt").forEach((el,ei)=>{
+          el.classList.add("locked");
+          if(ei===item.c) el.classList.add("correct");
+          if(ei===oi && oi!==item.c) el.classList.add("wrong");
+        });
+        const fb = card.querySelector(".fb");
+        fb.className = "fb " + (oi===item.c ? "good":"bad");
+        fb.textContent = oi===item.c ? "Correct!" : "Not quite - the correct answer is " + LETTERS[item.c] + ".";
+        refresh();
+      };
+      opts.appendChild(b);
+    });
+    card.appendChild(opts);
+    const fb = document.createElement("div");
+    fb.className = "fb";
+    if(picked!==undefined){
+      fb.className = "fb " + (picked===item.c ? "good":"bad");
+      fb.textContent = picked===item.c ? "Correct!" : "Not quite - the correct answer is " + LETTERS[item.c] + ".";
+    }
+    card.appendChild(fb);
+    mwrap.appendChild(card);
+  });
+  app.appendChild(mwrap);
+
+  refresh();
+  window.scrollTo({top:0, behavior:"instant" in window ? "instant" : "auto"});
+}
+
+function refresh(){
+  const active = document.querySelector(".tab.active");
+  const u = UNITS.find(x=> x.short === (active ? active.textContent.trim().split(" ")[0] : UNITS[0].short)) || UNITS[0];
+  // recompute tab percentages
+  const tabs = tabsEl.querySelectorAll(".tab");
+  tabs.forEach((el,idx)=>{
+    const uu = UNITS[idx];
+    const d = unitDone(uu), t = unitTotal(uu);
+    el.querySelector(".pct").textContent = Math.round(d/t*100) + "%";
+  });
+  // unit bar
+  const bar = app.querySelector(".unitbar");
+  if(bar){
+    const d = unitDone(u), t = unitTotal(u);
+    bar.querySelector("i").style.width = (t? d/t*100 : 0) + "%";
+    bar.querySelector("small").textContent = d + " / " + t;
+  }
+  updateOverall();
+}
+
+function updateOverall(){
+  const d = overallDone();
+  document.getElementById("overallBar").style.width = (TOTAL? d/TOTAL*100 : 0) + "%";
+  document.getElementById("overallTxt").textContent = d + " / " + TOTAL;
+}
+
+document.getElementById("reset").onclick = ()=>{
+  if(confirm("Reset all saved progress?")){
+    state = {}; save();
+    const activeTab = document.querySelector(".tab.active");
+    render(activeTab ? UNITS[0].id : UNITS[0].id);
+  }
+};
+
+render(UNITS[0].id);
+</script>
+</body>
+</html>
